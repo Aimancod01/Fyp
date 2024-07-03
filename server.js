@@ -4,9 +4,10 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import loginRouter from "./routes/loginRouter.js";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 dotenv.config();
 app.use(express.json());
-
+app.use(cookieParser());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -18,7 +19,8 @@ app.use("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  res.status(500).json({ message: "Something went wrong" });
+  const msg = err.message || "something went wrong";
+  res.status(500).json({ msg });
 });
 
 const port = process.env.PORT || 4000;
